@@ -95,6 +95,8 @@ function loop() {
   planoDeFundo.desenha();
   chao.desenha();
   flappyBird.desenha();
+
+  flappyBird.y += 1;
   requestAnimationFrame(loop); //vai ajudar a gente a desenhar os quadros na tela da maneira mais inteligente possível
 }
 
