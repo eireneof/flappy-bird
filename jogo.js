@@ -67,24 +67,85 @@ const chao = {
   },
 };
 
+function fazColisao(flappyBird, chao) {
+  const flappyBirdY = flappyBird.y + flappyBird.altura;
+  const chaoY = chao.y;
+
+  if(flappyBirdY >= chaoY) {
+    return true;
+  }
+  return false;
+}
+
+function criaFlappyBird() {
+    //---------PASSARINHO--------
+  const flappyBird = { //estrutura que representa o passarinho
+    spriteX: 0,
+    spriteY: 0,
+    largura: 33,
+    altura: 24,
+    x: 10,
+    y: 50,
+    pulo: 4.6,
+    pula () {
+      flappyBird.velocidade = - flappyBird.pulo;
+    },
+    gravidade: 0.25,
+    velocidade: 0,
+    //o passarinho além de ter as carcterísticas, vai ter o comportamento de 
+    //ficar se desenhando
+    atualiza() {
+      if(fazColisao(flappyBird, chao)) {
+        console.log('Fez colisão');
+
+        mudaParaTela(Telas.INICIO);
+        return;
+      }
+      flappyBird.velocidade = flappyBird.velocidade + flappyBird.gravidade;
+      //console.log(flappyBird.velocidade);
+      flappyBird.y += flappyBird.velocidade;
+    },
+    desenha() {
+      //para desenhar o passarinho vou pegar a variável contexto
+      contexto.drawImage(
+      sprites, //a imagem na qual vamos trabalhar
+      flappyBird.spriteX, flappyBird.spriteY, // Sprite X, Sprite Y //pedaço que queremospegar da sprite (sprite x e sprite y)
+      flappyBird.largura, flappyBird.altura, // Tamanho do recorte na sprite
+      flappyBird.x, flappyBird.y, //dentro do canvas posição
+      flappyBird.largura, flappyBird.altura, //dentro do canvas qual vai ser o tamanho
+      );
+    }
+  }
+  return flappyBird;
+}
+
 //---------PASSARINHO--------
-const flappyBird = { //estrutura que representa o passarinho
+/*const flappyBird = { //estrutura que representa o passarinho
   spriteX: 0,
   spriteY: 0,
   largura: 33,
   altura: 24,
   x: 10,
   y: 50,
+  pulo: 4.6,
+  pula () {
+    flappyBird.velocidade = - flappyBird.pulo;
+  },
   gravidade: 0.25,
   velocidade: 0,
   //o passarinho além de ter as carcterísticas, vai ter o comportamento de 
   //ficar se desenhando
   atualiza() {
+    if(fazColisao(flappyBird, chao)) {
+      console.log('Fez colisão');
+
+      mudaParaTela(Telas.INICIO);
+      return;
+    }
     flappyBird.velocidade = flappyBird.velocidade + flappyBird.gravidade;
     //console.log(flappyBird.velocidade);
     flappyBird.y += flappyBird.velocidade;
   },
-
   desenha() {
     //para desenhar o passarinho vou pegar a variável contexto
     contexto.drawImage(
@@ -95,7 +156,7 @@ const flappyBird = { //estrutura que representa o passarinho
     flappyBird.largura, flappyBird.altura, //dentro do canvas qual vai ser o tamanho
     );
   }
-}
+} */
 
 ///---------MENSAGEM GET_READY--------
 const mensagemGetReady = {
@@ -119,18 +180,26 @@ const mensagemGetReady = {
 //TELAS!!!!!!
 
 //criar um objeto que guarda todas as telas (atualiza e desenha)
-
+const globais = {};
 let telaAtiva = {};
 function mudaParaTela(novaTela) {
   telaAtiva = novaTela;
+
+  if(telaAtiva.inicializa) {
+    telaAtiva.inicializa();
+  }
+
 }
 
 const Telas = {
   INICIO: {
+    inicializa() {
+      globais.flappyBird = criaFlappyBird();
+    },
     desenha() {
       planoDeFundo.desenha();
       chao.desenha();
-      flappyBird.desenha();
+      globais.flappyBird.desenha();
       mensagemGetReady.desenha();
     },
     click() {
@@ -147,10 +216,13 @@ Telas.JOGO = {
     //A ordem das funções a seguir funcionam como camadas
     planoDeFundo.desenha();
     chao.desenha();
-    flappyBird.desenha();
+    globais.flappyBird.desenha();
+  },
+  click() {
+    globais.flappyBird.pula();
   },
   atualiza() {
-    flappyBird.atualiza();
+    globais.flappyBird.atualiza();
   }
 };
 
