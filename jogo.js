@@ -75,8 +75,16 @@ const flappyBird = { //estrutura que representa o passarinho
   altura: 24,
   x: 10,
   y: 50,
+  gravidade: 0.25,
+  velocidade: 0,
   //o passarinho além de ter as carcterísticas, vai ter o comportamento de 
   //ficar se desenhando
+  atualiza() {
+    flappyBird.velocidade = flappyBird.velocidade + flappyBird.gravidade;
+    //console.log(flappyBird.velocidade);
+    flappyBird.y += flappyBird.velocidade;
+  },
+
   desenha() {
     //para desenhar o passarinho vou pegar a variável contexto
     contexto.drawImage(
@@ -95,8 +103,8 @@ function loop() {
   planoDeFundo.desenha();
   chao.desenha();
   flappyBird.desenha();
+  flappyBird.atualiza();
 
-  flappyBird.y += 1;
   requestAnimationFrame(loop); //vai ajudar a gente a desenhar os quadros na tela da maneira mais inteligente possível
 }
 
