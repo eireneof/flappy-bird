@@ -2,6 +2,9 @@ console.log('[Fireman] Flappy Bird');
 
 //desenho estático e game loop
 
+const som_HIT = new Audio();
+som_HIT.src = './efeitos/hit.wav';
+
 //pego uma imagem e associo uma URL a ela para pegar as sprites
 const sprites = new Image();
 sprites.src = './sprites.png';
@@ -97,8 +100,11 @@ function criaFlappyBird() {
     atualiza() {
       if(fazColisao(flappyBird, chao)) {
         console.log('Fez colisão');
-
-        mudaParaTela(Telas.INICIO);
+        som_HIT.play();
+        setTimeout(() => {
+          mudaParaTela(Telas.INICIO);
+        }, 500);
+        
         return;
       }
       flappyBird.velocidade = flappyBird.velocidade + flappyBird.gravidade;
