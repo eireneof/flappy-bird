@@ -97,16 +97,76 @@ const flappyBird = { //estrutura que representa o passarinho
   }
 }
 
+///---------MENSAGEM GET_READY--------
+const mensagemGetReady = {
+  sX: 134,
+  sY: 0,
+  w: 174,
+  h: 152,
+  x: (canvas.width / 2) - 174 / 2,
+  y: 50,
+  desenha() {
+    contexto.drawImage(
+      sprites,
+      mensagemGetReady.sX, mensagemGetReady.sY,
+      mensagemGetReady.w, mensagemGetReady.h,
+      mensagemGetReady.x, mensagemGetReady.y,
+      mensagemGetReady.w, mensagemGetReady.h
+    );
+  }
+}
+
+//TELAS!!!!!!
+
+//criar um objeto que guarda todas as telas (atualiza e desenha)
+
+let telaAtiva = {};
+function mudaParaTela(novaTela) {
+  telaAtiva = novaTela;
+}
+
+const Telas = {
+  INICIO: {
+    desenha() {
+      planoDeFundo.desenha();
+      chao.desenha();
+      flappyBird.desenha();
+      mensagemGetReady.desenha();
+    },
+    click() {
+      mudaParaTela(Telas.JOGO);
+    },
+    atualiza() {
+
+    }
+  }
+};
+
+Telas.JOGO = {
+  desenha() {
+    //A ordem das funções a seguir funcionam como camadas
+    planoDeFundo.desenha();
+    chao.desenha();
+    flappyBird.desenha();
+  },
+  atualiza() {
+    flappyBird.atualiza();
+  }
+};
+
 function loop() {
-
-  //A ordem das funções a seguir funcionam como camadas
-  planoDeFundo.desenha();
-  chao.desenha();
-  flappyBird.desenha();
-  flappyBird.atualiza();
-
+  telaAtiva.desenha();
+  telaAtiva.atualiza();
   requestAnimationFrame(loop); //vai ajudar a gente a desenhar os quadros na tela da maneira mais inteligente possível
 }
 
+//cada tela vai ter um comportamento diferente ao clique
+window.addEventListener('click', function () {
+  if(telaAtiva.click) {
+    telaAtiva.click();
+  }
+});
+
+mudaParaTela(Telas.INICIO);
 loop();
 
