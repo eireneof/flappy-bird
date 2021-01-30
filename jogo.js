@@ -266,6 +266,18 @@ function criaCanos() {
         }
       })
     },
+    temColisaoComOFlappyBird(par) {
+      const cabecaDoFlappy = globais.flappyBird.y;
+      const peDoFlappy = globais.flappyBird.y + globais.flappyBird.altura;
+      if(globais.flappyBird.x >= par.x) {
+        if(cabecaDoFlappy <= par.canoCeu.y) {
+          return true;
+        } else if(peDoFlappy >= par.canoChao.y) {
+          return true;
+        }
+      }
+      return false;
+    },
     pares: [],
     atualiza() {
       const passou100Frames = frames % 100 === 0;
@@ -279,6 +291,12 @@ function criaCanos() {
       }
       canos.pares.forEach(function(par) {
         par.x = par.x - 2;
+
+        //pra cada cano, fazemos uma verificação
+        if(canos.temColisaoComOFlappyBird(par)) {
+          mudaParaTela(Telas.INICIO);
+        }
+        
 
         if(par.x + canos.largura <= 0) {
           canos.pares.shift();
@@ -314,7 +332,7 @@ const Telas = {
     desenha() {
       planoDeFundo.desenha();
       globais.flappyBird.desenha();
-      globais.canos.desenha();
+      //globais.canos.desenha();
       globais.chao.desenha(); 
       mensagemGetReady.desenha();
     },
@@ -323,7 +341,7 @@ const Telas = {
     },
     atualiza() {
       globais.chao.atualiza();
-      globais.canos.atualiza();
+      //globais.canos.atualiza();
     }
   }
 };
